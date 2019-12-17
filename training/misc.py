@@ -79,6 +79,12 @@ def apply_mirror_augment(minibatch):
     minibatch[mask] = minibatch[mask, :, :, ::-1]
     return minibatch
 
+def apply_mirror_augment_v(minibatch):
+    mask = np.random.rand(minibatch.shape[0]) < 0.5
+    minibatch = np.array(minibatch)
+    minibatch[mask] = minibatch[mask, :, ::-1, :]
+    return minibatch
+
 #----------------------------------------------------------------------------
 # Loading data from previous training runs.
 
