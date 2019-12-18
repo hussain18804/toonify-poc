@@ -51,7 +51,7 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
     train.mirror_augment = mirror_augment
     train.mirror_augment_v = mirror_augment_v
     train.image_snapshot_ticks = 1
-    train.network_snapshot_ticks = 6
+    train.network_snapshot_ticks = 4
     sched.G_lrate_base = sched.D_lrate_base = 0.003
     sched.minibatch_size_base = 32
     sched.minibatch_gpu_base = 4
