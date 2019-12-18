@@ -12,7 +12,7 @@ import numpy as np
 import PIL.Image
 import PIL.ImageFont
 import dnnlib
-
+import glob
 #----------------------------------------------------------------------------
 # Convenience wrappers for pickle that are able to load data produced by
 # older versions of the code, and from external URLs.
