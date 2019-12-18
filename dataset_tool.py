@@ -873,6 +873,19 @@ def execute_cmdline(argv):
         "since the tool recursively searches inside every sub-directory for image files",
         "create_from_images datasets/mydataset myimagedir",
     )
+    p.add_argument("tfrecord_dir", help="New dataset directory to be created")
+    p.add_argument("image_dir", help="Directory containing the images")
+    p.add_argument(
+        "--resize",
+        help="resize to given power of 2 sized square images (default: None)",
+        type=int,
+        default=None,
+        required=False
+    )
+    p.add_argument(
+        "--shuffle", help="Randomize image order (default: 1)", type=int, default=1
+    )
+
     p = add_command(
         "create_from_images_raw",
         "Create dataset from a directory full of images. Please be careful"
