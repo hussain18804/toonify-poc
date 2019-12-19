@@ -697,7 +697,8 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, res_log2=7, resize=
     
     if channels not in [1, 3]:
         error("Input images must be stored as RGB or grayscale")
-
+    if shuffle:
+        print("Shuffle the images...")
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = (
             tfr.choose_shuffled_order() if shuffle else np.arange(len(image_filenames))
@@ -705,6 +706,8 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, res_log2=7, resize=
         tfr.create_tfr_writer(img.shape)
         print("Adding the images to tfrecords ...")
         for idx in range(order.size):
+            if idx % 1000 == 0:
+                print ("added images", idx)
             with tf.gfile.FastGFile(image_filenames[order[idx]], 'rb') as fid:
                 encoded_jpg = fid.read()
                 tfr.add_image_raw(encoded_jpg)
