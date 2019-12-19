@@ -33,7 +33,7 @@ _valid_configs = [
 
 #----------------------------------------------------------------------------
 
-def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2):
+def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2, lr):
     train     = EasyDict(run_func_name='training.training_loop.training_loop') # Options for training loop.
     G         = EasyDict(func_name='training.networks_stylegan2.G_main')       # Options for generator network.
     D         = EasyDict(func_name='training.networks_stylegan2.D_stylegan2')  # Options for discriminator network.
@@ -52,7 +52,7 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
     train.mirror_augment_v = mirror_augment_v
     train.image_snapshot_ticks = 1
     train.network_snapshot_ticks = 4
-    sched.G_lrate_base = sched.D_lrate_base = 0.003
+    sched.G_lrate_base = sched.D_lrate_base = lr
     sched.minibatch_size_base = 32
     sched.minibatch_gpu_base = 4
     D_loss.gamma = 10
@@ -176,7 +176,8 @@ def main():
     parser.add_argument('--min-h', help='lowest dim of height', default=4, type=int)
     parser.add_argument('--min-w', help='lowest dim of width', default=4, type=int)
     parser.add_argument('--res-log2', help='multiplier for image size, the training image size (height, width) should be (min_h * 2**res_log2, min_w * 2**res_log2)', default=7, type=int)
-
+    parser.add_argument('--lr', help='base learning rate', default=0.003, type=float)
+    
     args = parser.parse_args()
 
     if not os.path.exists(args.data_dir):
