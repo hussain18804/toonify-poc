@@ -1,3 +1,23 @@
+## Train Your StyleGAN2 Using Colab
+
+
+**Various Improvements to make StyleGAN2 more suitible for training on Google Colab**
+| Supports Non-Square images, for example, 768*512, which basically as 6*4 (*2^7), or 640*384 as 5*3 (*2^7), etc.
+| Supports vertical mirror augmentation
+| Supports train from latest pkl automcatically
+| Optimized dataset creation and access for non-progressive training and for colab training, which includes: create only the maximum size tfrecord; use raw JPEG instead of decoded numpy array, which reduce both record creation time and size dramatically. (* Only tested for config-e and config-f, as no-progressive for these configurations)
+
+**Detailed instruction for training your stylegan2 with Google Colab**
+
+| Coming soon.
+
+**Credits**
+|https://github.com/NVlabs/stylegan2
+|https://github.com/akanimax/msg-stylegan-tf
+
+
+## Original README
+
 ## StyleGAN2 &mdash; Official TensorFlow Implementation
 
 ![Teaser image](./docs/stylegan2-teaser-1024x256.png)
