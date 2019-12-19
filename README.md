@@ -1,4 +1,4 @@
-## Train Your StyleGAN2 Using Colab
+## Train Your Own StyleGAN2 Using Colab
 
 
 **Various Improvements to make StyleGAN2 more suitible to be trained on Google Colab**
@@ -7,9 +7,20 @@
 * Supports train from latest pkl automcatically
 * Optimized dataset creation and access for non-progressive training and for colab training, which includes: create only the maximum size tfrecord; use raw JPEG instead of decoded numpy array, which reduce both tfrecord creation time and dataset size dramatically. (* Only tested for config-e and config-f, as no-progressive for these configurations)
 
-**Detailed instruction for training your stylegan2 with Google Colab**
+**Detailed instruction for training your stylegan2**
 
-* Coming soon.
+* Create training image set. Instead of image size of 2^n * 2^n, now you can process your image size as of (min_h x 2^n) X (min_w * 2^n) natually. For example, 640x384, min_h = 5, min_w =3, n=7. Please make sure all your raw images are preprocessed to the exact same size. To reduce the training set size, JPEG format is preferred.
+* Create tfrecord, clone this repo, then
+```
+python dataset_tool.py create_from_images_raw dataset_dir raw_image_dir
+```
+* To train, for example, 640x384 training set
+```
+python run_training.py --num-gpus=your_gpu_num --data-dir=your_data_dir --config=config-e(or config_f) --dataset=your_data_set --mirror-augment=true --metric=none --total-kimg=12000 --min-h=5 --min-w=3 --res-log2=7 --result-dir=your_result_dir
+```
+
+**Tips for Colab training**
+* TODO
 
 **Credits**
 * https://github.com/NVlabs/stylegan2
