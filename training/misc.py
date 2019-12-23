@@ -29,6 +29,8 @@ def load_pkl(file_or_url):
 
 def locate_latest_pkl(result_dir):
     allpickles = sorted(glob.glob(os.path.join(result_dir, '0*', 'network-*.pkl')))
+    if len(allpickles) == 0:
+        return None, 0.0
     latest_pickle = allpickles[-1]
     resume_run_id = os.path.basename(os.path.dirname(latest_pickle))
     RE_KIMG = re.compile('network-snapshot-(\d+).pkl')
