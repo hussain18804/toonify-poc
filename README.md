@@ -37,6 +37,11 @@ print('GPU Identified at: {}'.format(tf.test.gpu_device_name()))
 ```
 * Tar your raw data and upload to google drive, share it as data_url
 * In colab, mount your google drive, and make a result dir if there is none, for example, 'stylegan2/results'
+```
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+```
+
 * download raw dataset to colab using '!gdown data_url'
 * create your dataset for train
 ```
