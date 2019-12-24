@@ -1,5 +1,6 @@
 ## Train Your Own StyleGAN2 Using Colab
 
+![Teaser image](./fake_art_portrait.jpg)
 
 **Various Improvements to make StyleGAN2 more suitible to be trained on Google Colab**
 * Supports Non-Square images, for example, 768x512, which basically as 6x4 (x2^7), or 640x384 as 5x3 (x2^7), etc.
