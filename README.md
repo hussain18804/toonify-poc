@@ -21,7 +21,36 @@ python run_training.py --num-gpus=your_gpu_num --data-dir=your_data_dir --config
 ```
 
 **Tips for Colab training**
-* TODO
+* Clone this repo
+```
+%tensorflow_version 1.x
+import tensorflow as tf
+
+# Download the code
+!git clone https://github.com/skyflynil/stylegan2.git
+%cd stylegan2
+!nvcc test_nvcc.cu -o test_nvcc -run
+
+print('Tensorflow version: {}'.format(tf.__version__) )
+!nvidia-smi -L
+print('GPU Identified at: {}'.format(tf.test.gpu_device_name()))
+```
+* Tar your raw data and upload to google drive, share it as data_url
+* In colab, mount your google drive, and make a result dir if there is none, for example, 'stylegan2/results'
+* download raw dataset to colab using '!gdown data_url'
+* create your dataset for train
+```
+!mkdir dataset
+!tar -xf your_download_tar
+!python dataset_tool.py create_from_images_raw ./dataset/dataset_name untared_raw_image_dir
+```
+* start training
+```
+!python run_training.py --num-gpus=1 --data-dir=./dataset --config=config-f --dataset=your_dataset_name --mirror-augment=true --metric=none --total-kimg=20000 --min-h=5 --min-w=3 --res-log2=7 --result-dir="/content/drive/My Drive/stylegan2/results"
+```
+and it will automatically resume from last saved pkl.
+
+* You may also save a generated tfrecord directly in your google drive, and pin your dataset dir to your google drive. The benefit of creating a new tfrecord everytime are: Google colab disconnects after around 9-12 hours, since there is no true randomness for tfrecord, you may end up using some data more often then other. Also, the read speed from mounted google drive is kind of slow. It only takes about 2 min to gdown and create dataset for 30k/2G jpeg files.
 
 **Credits**
 * https://github.com/NVlabs/stylegan2
