@@ -50,7 +50,11 @@ print('GPU Identified at: {}'.format(tf.test.gpu_device_name()))
 ```
 and it will automatically resume from last saved pkl.
 
-* You may also save a generated tfrecord directly in your google drive, and pin your dataset dir to your google drive. The benefit of creating a new tfrecord everytime are: Google colab disconnects after around 9-12 hours, since there is no true randomness for tfrecord, you may end up using some data more often then other. Also, the read speed from mounted google drive is kind of slow. It only takes about 2 min to gdown and create dataset for 30k/2G jpeg files.
+* You may also save a generated tfrecord directly in your google drive, and pin your dataset dir to your google drive. The benefit of creating a new tfrecord everytime is: Google colab disconnects after around 9-12 hours, since there is no true randomness for tfrecord, you may end up using some data more often then others. Also, the read/transfer speed from mounted google drive is kind of slow. It only takes about 2 min to gdown and create dataset for 30k/2G jpeg files.
+
+* You may also try this to boost your instance memory before training. 
+
+https://github.com/googlecolab/colabtools/issues/253
 
 **Credits**
 * https://github.com/NVlabs/stylegan2
