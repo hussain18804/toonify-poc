@@ -64,6 +64,7 @@ https://github.com/googlecolab/colabtools/issues/253
 **Credits**
 * https://github.com/NVlabs/stylegan2
 * https://github.com/akanimax/msg-stylegan-tf
+* https://colab.research.google.com/drive/1ShgW6wohEFQtqs_znMna3dzrcVoABKIH
 
 
 ## Original README
