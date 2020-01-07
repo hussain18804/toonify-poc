@@ -5,7 +5,7 @@
 **Various Improvements to make StyleGAN2 more suitible to be trained on Google Colab**
 * Supports Non-Square images, for example, 768x512, which basically as 6x4 (x2^7), or 640x384 as 5x3 (x2^7), etc.
 * Supports vertical mirror augmentation
-* Supports train from latest pkl automcatically
+* Supports train from latest pkl automatically
 * Optimized dataset creation and access for non-progressive training and for colab training, which includes: create only the maximum size tfrecord; use raw JPEG instead of decoded numpy array, which reduce both tfrecord creation time and dataset size dramatically. (* Only tested for config-e and config-f, as no-progressive for these configurations)
 
 **Detailed instruction for training your stylegan2**
@@ -42,11 +42,14 @@ from google.colab import drive
 drive.mount("/content/drive", force_remount=True)
 ```
 
-* download raw dataset to colab using '!gdown data_url'
+* download raw dataset to colab using 
+```
+!gdown data_url
+```
 * create your dataset for train
 ```
 !mkdir dataset
-!tar -xf your_download_tar
+!tar -xf your_downloaded_tar
 !python dataset_tool.py create_from_images_raw ./dataset/dataset_name untared_raw_image_dir
 ```
 * start training
@@ -60,6 +63,13 @@ and it will automatically resume from last saved pkl.
 * You may also try this to boost your instance memory before training. 
 
 https://github.com/googlecolab/colabtools/issues/253
+
+* For image size 1280x768 (hxw), you may choose (min_h, min_w, res_log2) as (10, 6, 7) or (5, 3, 8) , the latter setup is preferred due to deeper and smaller network, change res_log2 argument for dataset creation and training accordingly.
+```
+!python dataset_tool.py create_from_images_raw --res_log2=8 ./dataset/dataset_name untared_raw_image_dir
+!python run_training.py --num-gpus=1 --data-dir=./dataset --config=config-f --dataset=your_dataset_name --mirror-augment=true --metric=none --total-kimg=20000 --min-h=5 --min-w=3 --res-log2=8 --result-dir="/content/drive/My Drive/stylegan2/results"
+```
+* You may change relevant arguments in run_traing.py for fakeimage/checkpoint interval, D/G learning rate, and minibatch_gpu_base to suit your needs or workaround gpu memory issues.
 
 **Credits**
 * https://github.com/NVlabs/stylegan2
