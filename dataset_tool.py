@@ -888,7 +888,13 @@ def execute_cmdline(argv):
     p.add_argument(
         "--shuffle", help="Randomize image order (default: 1)", type=int, default=1
     )
-
+    p.add_argument(
+        "--res_log2",
+        help="image width and height should be multiple of 2**res_log2 (default: 7)",
+        type=int,
+        default=7
+    )
+    
     p = add_command(
         "create_from_images_raw",
         "Create dataset from a directory full of images. Please be careful"
@@ -907,7 +913,13 @@ def execute_cmdline(argv):
     p.add_argument(
         "--shuffle", help="Randomize image order (default: 1)", type=int, default=1
     )
-
+    p.add_argument(
+        "--res_log2",
+        help="image width and height should be multiple of 2**res_log2 (default: 7)",
+        type=int,
+        default=7
+    )
+    
     p = add_command(
         "create_from_hdf5",
         "Create dataset from legacy HDF5 archive.",
