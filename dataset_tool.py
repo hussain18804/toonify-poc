@@ -634,7 +634,11 @@ def create_celeba(tfrecord_dir, celeba_dir, cx=89, cy=121):
 
 
 # ----------------------------------------------------------------------------
-
+def _get_all_files_2(path):
+    return_list = list()
+    for (dirpath, dirnames, filenames) in os.walk(path.encode('UTF-8')):
+        return_list += [os.path.join(dirpath, file) for file in filenames]
+    return return_list
 
 def _get_all_files(path):
     if os.path.isfile(path):
@@ -687,7 +691,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle, res_log2=7, resize=None
 
 def create_from_images_raw(tfrecord_dir, image_dir, shuffle, res_log2=7, resize=None):
     print('Loading images from "%s"' % image_dir)
-    image_filenames = _get_all_files(image_dir)
+    image_filenames = _get_all_files_2(image_dir)
     print(f"detected {len(image_filenames)} images ...")
     if len(image_filenames) == 0:
         error("No input images found")
@@ -709,8 +713,11 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, res_log2=7, resize=
             if idx % 1000 == 0:
                 print ("added images", idx)
             with tf.gfile.FastGFile(image_filenames[order[idx]], 'rb') as fid:
-                encoded_jpg = fid.read()
-                tfr.add_image_raw(encoded_jpg)
+                try:
+                    tfr.add_image_raw(fid.read())
+                except:
+                    print ('error when adding', image_filenames[order[idx]])
+                    continue
 # ----------------------------------------------------------------------------
 
 
