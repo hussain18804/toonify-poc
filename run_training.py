@@ -33,7 +33,7 @@ _valid_configs = [
 
 #----------------------------------------------------------------------------
 
-def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2, lr, use_attention, resume_with_new_nets):
+def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2, lr, use_attention, resume_with_new_nets, glr, dlr, use_raw):
     train     = EasyDict(run_func_name='training.training_loop.training_loop') # Options for training loop.
     G         = EasyDict(func_name='training.networks_stylegan2.G_main')       # Options for generator network.
     D         = EasyDict(func_name='training.networks_stylegan2.D_stylegan2')  # Options for discriminator network.
@@ -54,6 +54,12 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
     train.image_snapshot_ticks = 1
     train.network_snapshot_ticks = 4
     sched.G_lrate_base = sched.D_lrate_base = lr
+    
+    if glr:
+        sched.G_lrate_base = glr
+    if dlr:
+        sched.D_lrate_base = dlr
+
     sched.minibatch_size_base = 32
     sched.minibatch_gpu_base = 4
     D_loss.gamma = 10
@@ -62,6 +68,7 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
 
     desc += '-' + dataset
     dataset_args = EasyDict(tfrecord_dir=dataset)
+    dataset_args.use_raw = use_raw
     G.min_h = D.min_h = dataset_args.min_h = min_h
     G.min_w = D.min_w = dataset_args.min_w = min_w
     G.res_log2 = D.res_log2 = dataset_args.res_log2 = res_log2
@@ -182,6 +189,9 @@ def main():
     parser.add_argument('--min-w', help='lowest dim of width', default=4, type=int)
     parser.add_argument('--res-log2', help='multiplier for image size, the training image size (height, width) should be (min_h * 2**res_log2, min_w * 2**res_log2)', default=7, type=int)
     parser.add_argument('--lr', help='base learning rate', default=0.003, type=float)
+    parser.add_argument('--glr',help='overwrite base learning rate for G', default=None, type=float)
+    parser.add_argument('--dlr',help='overwrite base learning rate for D', default=None, type=float)
+    parser.add_argument('--use-raw', help='Use raw image dataset, i.e. created from create_from_images_raw (default: %(default)s)', default=True, metavar='BOOL', type=_str_to_bool)
     parser.add_argument('--use-attention', help='Experimental: Use google attention (default: %(default)s)', default=False, metavar='BOOL', type=_str_to_bool)
     parser.add_argument('--resume_with_new_nets', help='Experimental: Copy from checkpoint instead of direct load, useful for network structure modification (default: %(default)s)', default=False, metavar='BOOL', type=_str_to_bool)
     
