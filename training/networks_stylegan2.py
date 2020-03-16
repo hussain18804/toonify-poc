@@ -647,7 +647,7 @@ def G_synthesis_stylegan2(
             x = block(x, res)
             if architecture == 'skip':
                 y = upsample(y)
-            if architecture == 'skip' or res == resolution_log2:
+            if architecture == 'skip' or res == res_log2:
                 y = torgb(x, y, res)
     images_out = y
 
