@@ -612,7 +612,8 @@ def G_synthesis_stylegan2(
     def torgb(x, y, res): # res = 0..res_log2
         with tf.variable_scope('ToRGB'):
             t = apply_bias_act(modulated_conv2d_layer(x, dlatents_in[:, res*2+1], fmaps=num_channels, kernel=1, demodulate=False, fused_modconv=fused_modconv))
-            return t if y is None else y + t
+            out = t if y is None else y + t
+            return tf.image.random_flip_up_down(out)
 
     # Early layers.
     y = None
