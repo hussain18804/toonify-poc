@@ -185,6 +185,10 @@ class TFRecordDataset:
             )
             self._tf_init_op = self._tf_iterator.make_initializer(self._tf_dataset)
 
+    # empty close method expected by metric calcs
+    def close(self):
+        pass
+
     # Use the given minibatch size and level-of-detail for the data returned by get_minibatch_tf().
     def configure(self, minibatch_size, lod_in=0):
         #lod is ignored for this hack
