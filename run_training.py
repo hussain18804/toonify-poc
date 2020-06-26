@@ -33,7 +33,7 @@ _valid_configs = [
 
 #----------------------------------------------------------------------------
 
-def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2, lr, use_attention, resume_with_new_nets, glr, dlr, use_raw, resume_pkl):
+def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, mirror_augment, mirror_augment_v, metrics, min_h, min_w, res_log2, lr, use_attention, resume_with_new_nets, glr, dlr, use_raw, resume_pkl, minibatch_gpu_base, network_snapshot_ticks):
     train     = EasyDict(run_func_name='training.training_loop.training_loop') # Options for training loop.
     G         = EasyDict(func_name='training.networks_stylegan2.G_main')       # Options for generator network.
     D         = EasyDict(func_name='training.networks_stylegan2.D_stylegan2')  # Options for discriminator network.
@@ -52,7 +52,7 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
     train.mirror_augment_v = mirror_augment_v
     train.resume_with_new_nets = resume_with_new_nets
     train.image_snapshot_ticks = 1
-    train.network_snapshot_ticks = 4
+    train.network_snapshot_ticks = network_snapshot_ticks
     sched.G_lrate_base = sched.D_lrate_base = lr
     train.resume_pkl = resume_pkl
     
@@ -62,7 +62,7 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
         sched.D_lrate_base = dlr
 
     sched.minibatch_size_base = 32
-    sched.minibatch_gpu_base = 4
+    sched.minibatch_gpu_base = minibatch_gpu_base
     D_loss.gamma = 10
     metrics = [metric_defaults[x] for x in metrics]
     desc = 'stylegan2'
@@ -196,6 +196,8 @@ def main():
     parser.add_argument('--use-attention', help='Experimental: Use google attention (default: %(default)s)', default=False, metavar='BOOL', type=_str_to_bool)
     parser.add_argument('--resume_with_new_nets', help='Experimental: Copy from checkpoint instead of direct load, useful for network structure modification (default: %(default)s)', default=False, metavar='BOOL', type=_str_to_bool)
     parser.add_argument('--resume-pkl', help='Pkl to resume from (default: %(default)s)', default='latest')
+    parser.add_argument('--minibatch-gpu-base', help='number of images on each gpu', default=4, type=int)
+    parser.add_argument('--network-snapshot-ticks', help='number of images on each gpu', default=4, type=int)
     
     args = parser.parse_args()
 
