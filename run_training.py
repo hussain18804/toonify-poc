@@ -189,7 +189,7 @@ def main():
     parser.add_argument('--min-h', help='lowest dim of height', default=4, type=int)
     parser.add_argument('--min-w', help='lowest dim of width', default=4, type=int)
     parser.add_argument('--res-log2', help='multiplier for image size, the training image size (height, width) should be (min_h * 2**res_log2, min_w * 2**res_log2)', default=7, type=int)
-    parser.add_argument('--lr', help='base learning rate', default=0.003, type=float)
+    parser.add_argument('--lr', help='base learning rate', default=0.002, type=float)
     parser.add_argument('--glr',help='overwrite base learning rate for G', default=None, type=float)
     parser.add_argument('--dlr',help='overwrite base learning rate for D', default=None, type=float)
     parser.add_argument('--use-raw', help='Use raw image dataset, i.e. created from create_from_images_raw (default: %(default)s)', default=True, metavar='BOOL', type=_str_to_bool)
