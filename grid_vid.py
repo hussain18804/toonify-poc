@@ -57,6 +57,7 @@ def generate_interpolation_video(net: Path,
                                  mp4_fps:int=30, 
                                  mp4_codec='libx264',
                                  random_seed:int = 1000,
+                                 minibatch_size:int = 8,
                                  output_width: int = typer.Option(None)):
 
     Gs = load_net(net)
@@ -74,7 +75,7 @@ def generate_interpolation_video(net: Path,
         frame_idx = int(np.clip(np.round(t * mp4_fps), 0, num_frames - 1))
         latents = all_latents[frame_idx]
         labels = np.zeros([latents.shape[0], 0], np.float32)        
-        images = Gs.run(latents, None, truncation_psi=truncation_psi, randomize_noise=False, output_transform=fmt)
+        images = Gs.run(latents, None, truncation_psi=truncation_psi, randomize_noise=False, output_transform=fmt, minibatch_size=minibatch_size)
         
         images = images.transpose(0, 3, 1, 2) #NHWC -> NCHW
         grid = create_image_grid(images, grid_size).transpose(1, 2, 0) # HWC
