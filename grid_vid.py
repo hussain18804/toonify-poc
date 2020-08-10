@@ -56,7 +56,8 @@ def generate_interpolation_video(net: Path,
                                  smoothing_sec:float =1.0, 
                                  mp4_fps:int=30, 
                                  mp4_codec='libx264',
-                                 random_seed:int = 1000):
+                                 random_seed:int = 1000,
+                                 output_width: int = typer.Option(None)):
 
     Gs = load_net(net)
     num_frames = int(np.rint(duration_sec * mp4_fps))
@@ -84,6 +85,8 @@ def generate_interpolation_video(net: Path,
     # Generate video.
     import moviepy.editor # pip install moviepy
     c = moviepy.editor.VideoClip(make_frame, duration=duration_sec)
+    if output_width:
+        c = c.resize(width=output_width)
     c.write_videofile(str(mp4), fps=mp4_fps, codec=mp4_codec)
     return c
 
