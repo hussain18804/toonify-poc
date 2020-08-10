@@ -14,10 +14,17 @@ import dnnlib
 import dnnlib.tflib as tflib
 from tqdm import tqdm
 
-tflib.init_tf()
-fpath = 'nets/cakes.pkl'
-with open(fpath, 'rb') as stream:
-    _G, _D, Gs = pickle.load(stream, encoding='latin1')
+from pathlib import Path
+import typer
+
+
+
+def load_net(fpath):
+    tflib.init_tf()
+    with open(fpath, 'rb') as stream:
+        _G, _D, Gs = pickle.load(stream, encoding='latin1')
+
+    return Gs
     
 fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
 
@@ -38,13 +45,20 @@ def create_image_grid(images, grid_size=None):
         grid[..., y : y + img_h, x : x + img_w] = images[idx]
     return grid
 
-def generate_interpolation_video(truncation_psi=0.5,
-                                 grid_size=[1,1], image_shrink=1, image_zoom=1, 
-                                 duration_sec=60.0, smoothing_sec=1.0, 
-                                 mp4='test-lerp.mp4', mp4_fps=30, 
-                                 mp4_codec='libx264', mp4_bitrate='16M', 
-                                 random_seed=1000):
+    # grid_size=[4,4], mp4_fps=25, duration_sec=10.0, smoothing_sec=2.0, truncation_psi=0.7)
+from typing import Tuple
 
+def generate_interpolation_video(net: Path,
+                                 mp4: Path = Path("output.mp4"), 
+                                 truncation_psi:float =0.5,
+                                 grid_size: Tuple[int, int]=(1,1), 
+                                 duration_sec:float =60.0, 
+                                 smoothing_sec:float =1.0, 
+                                 mp4_fps:int=30, 
+                                 mp4_codec='libx264',
+                                 random_seed:int = 1000):
+
+    Gs = load_net(net)
     num_frames = int(np.rint(duration_sec * mp4_fps))
     random_state = np.random.RandomState(random_seed)
 
@@ -63,8 +77,6 @@ def generate_interpolation_video(truncation_psi=0.5,
         
         images = images.transpose(0, 3, 1, 2) #NHWC -> NCHW
         grid = create_image_grid(images, grid_size).transpose(1, 2, 0) # HWC
-        if image_zoom > 1:
-            grid = scipy.ndimage.zoom(grid, [image_zoom, image_zoom, 1], order=0)
         if grid.shape[2] == 1:
             grid = grid.repeat(3, 2) # grayscale => RGB
         return grid
@@ -72,8 +84,8 @@ def generate_interpolation_video(truncation_psi=0.5,
     # Generate video.
     import moviepy.editor # pip install moviepy
     c = moviepy.editor.VideoClip(make_frame, duration=duration_sec)
-    c.write_videofile(mp4, fps=mp4_fps, codec=mp4_codec, bitrate=mp4_bitrate)
+    c.write_videofile(str(mp4), fps=mp4_fps, codec=mp4_codec)
     return c
 
 if __name__ == "__main__":
-    generate_interpolation_video(grid_size=[4,4], mp4_fps=25, duration_sec=10.0, smoothing_sec=2.0, truncation_psi=0.7)
+    typer.run(generate_interpolation_video)
