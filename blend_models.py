@@ -88,15 +88,15 @@ def blend_models(model_1, model_2, resolution, level, blend_width=None, verbose=
 
     return model_out
 
-def main(low_res_pkl: Path = typer.Argument(..., help="Pickle file from which to take low res layers"),
-         high_res_pkl: Path = typer.Argument(..., help="Pickle file from which to take high res layers"),
-         resolution: int = typer.Argument(..., help="Resolution level at which to switch between models"),
-         level: int  = typer.Option(0, help="Switch at Conv block 0 or 1?"),
-         blend_width: Optional[float] = typer.Option(None, help="None = hard switch, float = smooth switch (logistic) with given width"),
-         output_grid: Optional[Path] = typer.Option("blended.jpg", help="Path of image file to save example grid (None = don't save)"),
-         seed: int = typer.Option(0, help="seed for random grid"),
-         output_pkl: Optional[Path] = typer.Option(None, help="Output path of pickle (None = don't save)"),
-         verbose: bool = typer.Option(False, help="Print out the exact blending fractions")
+def main(low_res_pkl: Path, # Pickle file from which to take low res layers
+         high_res_pkl: Path, # Pickle file from which to take high res layers
+         resolution: int, # Resolution level at which to switch between models
+         level: int  = 0, # Switch at Conv block 0 or 1?
+         blend_width: Optional[float] = None, # None = hard switch, float = smooth switch (logistic) with given width
+         output_grid: Optional[Path] = "blended.jpg", # Path of image file to save example grid (None = don't save)
+         seed: int = 0, # seed for random grid
+         output_pkl: Optional[Path] = None, # Output path of pickle (None = don't save)
+         verbose: bool = False, # Print out the exact blending fraction
          ):
 
     grid_size = (3, 3)
