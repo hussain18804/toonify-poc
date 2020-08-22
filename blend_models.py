@@ -45,7 +45,7 @@ def extract_conv_names(model):
     return conv_names
 
 
-def blend_models(model_1, model_2, resolution, level, blend_width=None):
+def blend_models(model_1, model_2, resolution, level, blend_width=None, verbose=False):
 
     # y is the blending amount which y = 0 means all model 1, y = 1 means all model_2
 
@@ -75,7 +75,8 @@ def blend_models(model_1, model_2, resolution, level, blend_width=None):
             y = 1 if x > 1 else 0
 
         ys.append(y)
-        print(f"Blending {name} by {y}")
+        if verbose:
+            print(f"Blending {name} by {y}")
 
     tfutil.set_vars(
         tfutil.run(
@@ -90,11 +91,12 @@ def blend_models(model_1, model_2, resolution, level, blend_width=None):
 def main(low_res_pkl: Path = typer.Argument(..., help="Pickle file from which to take low res layers"),
          high_res_pkl: Path = typer.Argument(..., help="Pickle file from which to take high res layers"),
          resolution: int = typer.Argument(..., help="Resolution level at which to switch between models"),
-         level: int  = typer.Argument(0, help="Switch at Conv block 0 or 1?"),
+         level: int  = typer.Option(0, help="Switch at Conv block 0 or 1?"),
          blend_width: Optional[float] = typer.Option(None, help="None = hard switch, float = smooth switch (logistic) with given width"),
-         output_grid: Optional[Path] = typer.Option(None, help="Path of image file to save example grid (None = don't save)"),
+         output_grid: Optional[Path] = typer.Option("blended.jpg", help="Path of image file to save example grid (None = don't save)"),
          seed: int = typer.Option(0, help="seed for random grid"),
          output_pkl: Optional[Path] = typer.Option(None, help="Output path of pickle (None = don't save)"),
+         verbose: bool = typer.Option(False, help="Print out the exact blending fractions")
          ):
 
     grid_size = (3, 3)
@@ -105,7 +107,7 @@ def main(low_res_pkl: Path = typer.Argument(..., help="Pickle file from which to
             low_res_G, low_res_D, low_res_Gs = misc.load_pkl(low_res_pkl)
             high_res_G, high_res_D, high_res_Gs = misc.load_pkl(high_res_pkl)
 
-            out = blend_models(low_res_Gs, high_res_Gs, resolution, level, blend_width=blend_width)
+            out = blend_models(low_res_Gs, high_res_Gs, resolution, level, blend_width=blend_width, verbose=verbose)
 
             rnd = np.random.RandomState(seed)
             grid_latents = rnd.randn(np.prod(grid_size), *out.input_shape[1:])
