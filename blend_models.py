@@ -109,10 +109,9 @@ def main(low_res_pkl: Path, # Pickle file from which to take low res layers
 
             out = blend_models(low_res_Gs, high_res_Gs, resolution, level, blend_width=blend_width, verbose=verbose)
 
-            rnd = np.random.RandomState(seed)
-            grid_latents = rnd.randn(np.prod(grid_size), *out.input_shape[1:])
-            
             if output_grid:
+                rnd = np.random.RandomState(seed)
+                grid_latents = rnd.randn(np.prod(grid_size), *out.input_shape[1:])
                 grid_fakes = out.run(grid_latents, None, is_validation=True, minibatch_size=1)
                 misc.save_image_grid(grid_fakes, output_grid, drange= [-1,1], grid_size=grid_size)
 
